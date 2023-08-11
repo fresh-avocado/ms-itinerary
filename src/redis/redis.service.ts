@@ -38,6 +38,8 @@ export class RedisService implements OnModuleDestroy {
     return JSON.parse(res) as ClientSession;
   }
 
+  // TODO: updateSession (shopping cart)
+
   onModuleDestroy() {
     this.redis.quit();
   }

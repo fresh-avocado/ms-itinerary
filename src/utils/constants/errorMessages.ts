@@ -7,4 +7,5 @@ export const GET_SESSION_ERROR = 'Could not retrieve session';
 export const GET_USERS_ERROR = 'Could get users';
 export const GET_USER_ERROR = 'Could get user';
 export const CREATE_USER_ERROR = 'Could not create user';
+export const CREATE_BUS_ERROR = 'Could not create bus';
 export const NON_EXISTENT_USER_ERROR = 'User does not exist';

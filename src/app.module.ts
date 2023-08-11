@@ -4,6 +4,8 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RedisModule } from './redis/redis.module';
+import { ItineraryModule } from './itinerary/itinerary.module';
+import { BusesModule } from './buses/buses.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { RedisModule } from './redis/redis.module';
       inject: [ConfigService],
     }),
     RedisModule,
+    ItineraryModule,
+    BusesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
