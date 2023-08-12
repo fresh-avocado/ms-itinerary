@@ -1,5 +1,10 @@
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 import { Operator } from '../enums/operator.enum';
+import { BusSeatType } from '../enums/busSeatType.enum';
+
+export type BusSeatCapacity = {
+  [key in BusSeatType]: number;
+};
 
 @Entity()
 @Index(['licensePlate', 'operator'], { unique: true })
@@ -14,5 +19,5 @@ export class Bus {
   operator: Operator;
 
   @Column('simple-json')
-  capacity: { [seatType: string]: number };
+  capacity: BusSeatCapacity;
 }

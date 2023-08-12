@@ -1,4 +1,4 @@
-import { Bus } from 'src/buses/entities/bus.entity';
+import { Bus, BusSeatCapacity } from 'src/buses/entities/bus.entity';
 import {
   Column,
   Entity,
@@ -35,5 +35,5 @@ export class Itinerary {
   bus: Bus;
 
   @Column('simple-json')
-  capacity: { [seatType: string]: number };
+  capacity: BusSeatCapacity;
 }

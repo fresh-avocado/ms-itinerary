@@ -1,6 +1,7 @@
 import { IsEnum, IsObject, IsString, Length, Matches } from 'class-validator';
 import { Operator } from '../enums/operator.enum';
 import { IsValidCapacity } from '../decorators/validCapacity.decorator';
+import { BusSeatCapacity } from '../entities/bus.entity';
 
 export class BusDTO {
   @IsString()
@@ -20,5 +21,5 @@ export class BusDTO {
     message:
       'Los buses deben tener asientos de tipo TURISTA, EJECUTIVO y PREMIUM. Además, cada uno debe tener 20 asientos como mínimo y 35 como máximo',
   })
-  capacity: { [seatType: string]: number };
+  capacity: BusSeatCapacity;
 }
