@@ -23,7 +23,7 @@ export class ItineraryService {
     private readonly itineraryRepository: Repository<Itinerary>,
     @InjectRepository(Bus) private readonly busRepository: Repository<Bus>,
     private readonly redis: RedisService,
-  ) {}
+  ) { }
 
   async createItinerary(itineraryDTO: ItineraryDTO): Promise<Itinerary> {
     // TODO: prevent creating itineraries that overlap (index by busId)
@@ -59,7 +59,7 @@ export class ItineraryService {
 
   // TODO: actualizarItinerarios? idealmente notificar al usuario mediante SES
 
-  async getValidItineraries() {
+  private async getValidItineraries() {
     try {
       return await this.itineraryRepository.find({
         where: { departureDate: MoreThan(new Date()) },
@@ -156,22 +156,23 @@ export class ItineraryService {
   async getItinerariesByCity(
     dto: GetItinerariesByCityDTO,
   ): Promise<Itinerary[]> {
-    if (!dto.cityOfOrigin && !dto.cityOfDestination) {
-      // the bas thing about class validator; in Joi I could
-      // easily specify give me one of the two, or both
-      return [];
+    // TODO: union en SQL en vez de concat?
+    this.logger.log(`dto: ${JSON.stringify(dto, null, 2)}`);
+    if (!dto || (!dto.cityOfOrigin && !dto.cityOfDestination)) {
+      return await this.getValidItineraries();
     }
+    const currentDate = new Date();
     try {
       let byCityOfOrigin: Itinerary[] = [];
       let byCityOfDestination: Itinerary[] = [];
       if (dto.cityOfDestination) {
         byCityOfDestination = await this.itineraryRepository.find({
-          where: { cityOfDestination: dto.cityOfDestination },
+          where: { cityOfDestination: dto.cityOfDestination, departureDate: MoreThan(currentDate) },
         });
       }
       if (dto.cityOfOrigin) {
         byCityOfOrigin = await this.itineraryRepository.find({
-          where: { cityOfOrigin: dto.cityOfOrigin },
+          where: { cityOfOrigin: dto.cityOfOrigin, departureDate: MoreThan(currentDate) },
         });
       }
       return byCityOfOrigin.concat(byCityOfDestination);

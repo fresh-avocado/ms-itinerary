@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Post,
   Put,
   Req,
@@ -18,10 +19,11 @@ import { AddItineraryToShoppingCartDTO } from './dtos/addItineraryToShoppingCart
 import { FastifyRequest } from 'fastify';
 import { ClientSession } from 'src/redis/types/session.type';
 import { DeleteItineraryFromShoppingCartDTO } from './dtos/deleteItineraryFromShoppingCart.dto';
+import { GetItinerariesByCityDTO } from './dtos/getItinerariesByCity.dto';
 
 @Controller('itinerary')
 export class ItineraryController {
-  constructor(private readonly itineraryService: ItineraryService) {}
+  constructor(private readonly itineraryService: ItineraryService) { }
 
   @AllowedUserType('onroad')
   @UseGuards(AuthGuard)
@@ -42,10 +44,11 @@ export class ItineraryController {
 
   @AllowedUserType('any')
   @UseGuards(AuthGuard)
-  @Get('/allValid')
+  @Post('/allValid')
+  @HttpCode(200)
   @UsePipes(ValidationPipe)
-  async getAllValid() {
-    return await this.itineraryService.getValidItineraries();
+  async getAllValid(@Body() dto: GetItinerariesByCityDTO) {
+    return await this.itineraryService.getItinerariesByCity(dto);
   }
 
   @AllowedUserType('normal')
