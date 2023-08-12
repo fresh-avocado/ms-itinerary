@@ -4,6 +4,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  Logger,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { FastifyRequest } from 'fastify';
@@ -17,6 +18,8 @@ import {
 
 @Injectable()
 export class AuthGuard implements CanActivate {
+  private readonly logger = new Logger(RedisService.name);
+
   constructor(
     private readonly redis: RedisService,
     private readonly reflector: Reflector,
@@ -32,6 +35,10 @@ export class AuthGuard implements CanActivate {
     }
 
     const sessionIdObj = req.unsignCookie(signedCookieValue);
+
+    this.logger.log(
+      `sessionIdObj: ${JSON.stringify(sessionIdObj.value, null, 2)}`,
+    );
 
     if (sessionIdObj.valid === false) {
       throw new HttpException(
