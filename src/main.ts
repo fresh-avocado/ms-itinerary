@@ -16,6 +16,6 @@ async function bootstrap() {
   await app.register(fastifyCookie, {
     secret: config.get<string>('COOKIE_SECRET'),
   });
-  await app.listen(3002);
+  await app.listen(3002, '0.0.0.0');
 }
 bootstrap();

@@ -1,11 +1,20 @@
-import { IsDateString, IsNumber, IsString, IsUUID, Min } from 'class-validator';
-import { Bus, BusSeatCapacity } from 'src/buses/entities/bus.entity';
+import {
+  IsDateString,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  IsUUID,
+  Min,
+} from 'class-validator';
+import { BusSeatCapacity } from 'src/buses/entities/bus.entity';
 
 export class ItineraryDTO {
   @IsString()
+  @IsNotEmpty()
   cityOfOrigin: string;
 
   @IsString()
+  @IsNotEmpty()
   cityOfDestination: string;
 
   @IsDateString({ strict: true })
@@ -19,7 +28,7 @@ export class ItineraryDTO {
   basePrice: number;
 
   @IsUUID()
-  bus: Bus | string;
+  busId: string;
 
   capacity: BusSeatCapacity;
 }
