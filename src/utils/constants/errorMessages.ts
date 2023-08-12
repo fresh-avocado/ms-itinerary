@@ -20,3 +20,5 @@ export const NON_EXISTENT_BUS_ERROR = 'Bus does not exist';
 export const FORBIDDEN_BUS_CAPACITY_ERROR = `Bus capacity should not fall short of ${MIN_BUS_SEAT_CAPACITY} and should not exceed ${MAX_BUS_SEAT_CAPACITY}`;
 export const UPDATE_SEAT_CAPACITY_ERROR = 'Could not update seat capacity';
 export const DELETE_BUS_ERROR = 'Could not delete bus';
+export const CREATE_ITINERARY_ERROR = 'Could not create itinerary';
+export const GET_ITINERARIES_ERROR = 'Could not get itineraries';

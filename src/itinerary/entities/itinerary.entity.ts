@@ -3,7 +3,7 @@ import {
   Column,
   Entity,
   JoinColumn,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -12,26 +12,23 @@ export class Itinerary {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column('text')
   cityOfOrigin: string;
 
-  @Column()
+  @Column('text')
   cityOfDestination: string;
 
-  // TODO: ensure date is created with proper time zone
-  @Column({ type: 'timestamptz', precision: 3 })
+  @Column('timestamp')
   departureDate: Date;
 
-  // new Date(new Date().toLocaleString('es', { timeZone: 'America/Lima' }))
-
-  @Column({ type: 'timestamptz', precision: 3 })
+  @Column('timestamp')
   arrivalDate: Date;
 
-  @Column()
+  @Column('real')
   basePrice: number;
 
-  @OneToOne(() => Bus)
-  @JoinColumn()
+  @ManyToOne(() => Bus)
+  @JoinColumn({})
   bus: Bus;
 
   @Column('simple-json')
