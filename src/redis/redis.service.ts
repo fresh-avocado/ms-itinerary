@@ -80,6 +80,17 @@ export class RedisService implements OnModuleDestroy {
     await this.setSession(sessionId, existingSession);
   }
 
+  async resetShoppingCart({
+    sessionId,
+    existingSession,
+  }: {
+    sessionId: string;
+    existingSession: ClientSession;
+  }): Promise<void> {
+    existingSession.shoppingCart = [];
+    await this.setSession(sessionId, existingSession);
+  }
+
   onModuleDestroy() {
     this.redis.quit();
   }

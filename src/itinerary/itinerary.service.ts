@@ -23,7 +23,7 @@ export class ItineraryService {
     private readonly itineraryRepository: Repository<Itinerary>,
     @InjectRepository(Bus) private readonly busRepository: Repository<Bus>,
     private readonly redis: RedisService,
-  ) { }
+  ) {}
 
   async createItinerary(itineraryDTO: ItineraryDTO): Promise<Itinerary> {
     // TODO: prevent creating itineraries that overlap (index by busId)
@@ -81,7 +81,6 @@ export class ItineraryService {
     dto: AddItineraryToShoppingCartDTO,
   ) {
     // TODO: basePrice * seatPercentage
-    // TODO: prevent inserting duplicates
     const found = existingSession.shoppingCart.find(
       (item) => item.itineraryId === dto.itineraryId,
     );
@@ -167,12 +166,18 @@ export class ItineraryService {
       let byCityOfDestination: Itinerary[] = [];
       if (dto.cityOfDestination) {
         byCityOfDestination = await this.itineraryRepository.find({
-          where: { cityOfDestination: dto.cityOfDestination, departureDate: MoreThan(currentDate) },
+          where: {
+            cityOfDestination: dto.cityOfDestination,
+            departureDate: MoreThan(currentDate),
+          },
         });
       }
       if (dto.cityOfOrigin) {
         byCityOfOrigin = await this.itineraryRepository.find({
-          where: { cityOfOrigin: dto.cityOfOrigin, departureDate: MoreThan(currentDate) },
+          where: {
+            cityOfOrigin: dto.cityOfOrigin,
+            departureDate: MoreThan(currentDate),
+          },
         });
       }
       return byCityOfOrigin.concat(byCityOfDestination);

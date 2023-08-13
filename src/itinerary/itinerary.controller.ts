@@ -23,7 +23,7 @@ import { GetItinerariesByCityDTO } from './dtos/getItinerariesByCity.dto';
 
 @Controller('itinerary')
 export class ItineraryController {
-  constructor(private readonly itineraryService: ItineraryService) { }
+  constructor(private readonly itineraryService: ItineraryService) {}
 
   @AllowedUserType('onroad')
   @UseGuards(AuthGuard)

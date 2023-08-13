@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RedisModule } from './redis/redis.module';
 import { ItineraryModule } from './itinerary/itinerary.module';
 import { BusesModule } from './buses/buses.module';
+import { ReservationModule } from './reservation/reservation.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { BusesModule } from './buses/buses.module';
     RedisModule,
     ItineraryModule,
     BusesModule,
+    ReservationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
