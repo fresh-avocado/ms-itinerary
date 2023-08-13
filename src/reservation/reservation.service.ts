@@ -17,7 +17,7 @@ export class ReservationService {
     @InjectRepository(Reservation)
     private readonly reservationRepository: Repository<Reservation>,
     private readonly redisService: RedisService,
-  ) { }
+  ) {}
 
   async makeReservations(
     sessionId: string,

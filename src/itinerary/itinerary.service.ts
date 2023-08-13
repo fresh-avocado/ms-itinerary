@@ -23,7 +23,7 @@ export class ItineraryService {
     private readonly itineraryRepository: Repository<Itinerary>,
     @InjectRepository(Bus) private readonly busRepository: Repository<Bus>,
     private readonly redis: RedisService,
-  ) {}
+  ) { }
 
   async createItinerary(itineraryDTO: ItineraryDTO): Promise<Itinerary> {
     // TODO: prevent creating itineraries that overlap (index by busId)
@@ -155,32 +155,26 @@ export class ItineraryService {
   async getItinerariesByCity(
     dto: GetItinerariesByCityDTO,
   ): Promise<Itinerary[]> {
-    // TODO: union en SQL en vez de concat?
-    this.logger.log(`dto: ${JSON.stringify(dto, null, 2)}`);
-    if (!dto || (!dto.cityOfOrigin && !dto.cityOfDestination)) {
-      return await this.getValidItineraries();
-    }
-    const currentDate = new Date();
     try {
-      let byCityOfOrigin: Itinerary[] = [];
-      let byCityOfDestination: Itinerary[] = [];
+      this.logger.log(`dto: ${JSON.stringify(dto, null, 2)}`);
+      if (!dto || (!dto.cityOfOrigin && !dto.cityOfDestination)) {
+        return await this.getValidItineraries();
+      }
+      const currentDate = new Date();
+      const queryObj: GetItinerariesByCityDTO = {};
       if (dto.cityOfDestination) {
-        byCityOfDestination = await this.itineraryRepository.find({
-          where: {
-            cityOfDestination: dto.cityOfDestination,
-            departureDate: MoreThan(currentDate),
-          },
-        });
+        queryObj.cityOfDestination = dto.cityOfDestination;
       }
       if (dto.cityOfOrigin) {
-        byCityOfOrigin = await this.itineraryRepository.find({
-          where: {
-            cityOfOrigin: dto.cityOfOrigin,
-            departureDate: MoreThan(currentDate),
-          },
-        });
+        queryObj.cityOfOrigin = dto.cityOfOrigin;
       }
-      return byCityOfOrigin.concat(byCityOfDestination);
+
+      return await this.itineraryRepository.find({
+        where: {
+          ...queryObj,
+          departureDate: MoreThan(currentDate),
+        },
+      });
     } catch (error) {
       this.logger.error(
         `error getting itineraries by city: ${stringifyError(error)}`,
