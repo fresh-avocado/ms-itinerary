@@ -1,7 +1,12 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Itinerary } from './entities/itinerary.entity';
-import { MoreThan, Repository } from 'typeorm';
+import {
+  LessThanOrEqual,
+  MoreThan,
+  MoreThanOrEqual,
+  Repository,
+} from 'typeorm';
 import { ItineraryDTO } from './dtos/itinerary.dto';
 import { stringifyError } from 'src/utils/stringifyError';
 import {
@@ -26,12 +31,31 @@ export class ItineraryService {
   ) { }
 
   async createItinerary(itineraryDTO: ItineraryDTO): Promise<Itinerary> {
-    // TODO: prevent creating itineraries that overlap (index by busId)
     try {
+      const conflictingItinerary = await this.itineraryRepository.findOne({
+        where: [
+          {
+            busId: itineraryDTO.busId,
+            departureDate: LessThanOrEqual(itineraryDTO.departureDate),
+            arrivalDate: MoreThanOrEqual(itineraryDTO.departureDate),
+          },
+          {
+            busId: itineraryDTO.busId,
+            departureDate: LessThanOrEqual(itineraryDTO.arrivalDate),
+            arrivalDate: MoreThanOrEqual(itineraryDTO.arrivalDate),
+          },
+        ],
+      });
+      if (conflictingItinerary !== null) {
+        throw new Error('itinerary conflicts with an existing one');
+      }
       const bus = await this.busRepository.findOne({
         where: { id: itineraryDTO.busId },
         select: ['capacity'],
       });
+      if (bus === null) {
+        throw new Error('bus does not exist');
+      }
       itineraryDTO.capacity = bus.capacity;
       const newItinerary = this.itineraryRepository.create(itineraryDTO);
       const savedItinerary = await this.itineraryRepository.save(newItinerary);
@@ -58,7 +82,14 @@ export class ItineraryService {
   }
 
   // TODO: actualizarItinerarios? idealmente notificar al usuario mediante SES
+  // buscar nomás todas las reservas con tal itineraryId porque actualizar
+  // itinerarios no es tan común
 
+  /*
+    Notar que este endpoint puede devolver itinerarios que estén llenos. Sin embargo,
+    creo que eso es deseable, ya que a veces uno está interesado en unirse a la lista
+    de espera.
+  */
   private async getValidItineraries() {
     try {
       return await this.itineraryRepository.find({

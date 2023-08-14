@@ -2,10 +2,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-
-// TODO: create relevant indexes
 
 @Entity()
 export class Reservation {
@@ -18,6 +17,7 @@ export class Reservation {
   @Column('uuid')
   busId: string;
 
+  @Index()
   @Column('uuid')
   itineraryId: string;
 
