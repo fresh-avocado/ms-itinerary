@@ -16,11 +16,17 @@ import { ClientSession } from 'src/redis/types/session.type';
 import { ReservationService } from './reservation.service';
 import { DeleteReservationDTO } from './dtos/deleteReservation.dto';
 import { GetReservationsDTO } from './dtos/getReservations.dto';
+import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('reservation')
+@ApiCookieAuth('sessionId')
 @Controller('reservation')
 export class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}
 
+  @ApiOperation({
+    summary: "Reserves all itineraries in the user's shopping cart.",
+  })
   @AllowedUserType('normal')
   @UseGuards(AuthGuard)
   @Post('/make')
@@ -33,6 +39,7 @@ export class ReservationController {
     );
   }
 
+  @ApiOperation({ summary: 'Returns all made reservations.' })
   @AllowedUserType('onroad')
   @UseGuards(AuthGuard)
   @Post('/all')
@@ -42,6 +49,7 @@ export class ReservationController {
     return await this.reservationService.getAll(dto);
   }
 
+  @ApiOperation({ summary: 'Deletes (cancels) a reservation.' })
   @AllowedUserType('any')
   @UseGuards(AuthGuard)
   @Delete('/delete')

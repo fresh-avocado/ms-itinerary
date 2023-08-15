@@ -20,11 +20,15 @@ import { FastifyRequest } from 'fastify';
 import { ClientSession } from 'src/redis/types/session.type';
 import { DeleteItineraryFromShoppingCartDTO } from './dtos/deleteItineraryFromShoppingCart.dto';
 import { GetItinerariesByCityDTO } from './dtos/getItinerariesByCity.dto';
+import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('itinerary')
+@ApiCookieAuth('sessionId')
 @Controller('itinerary')
 export class ItineraryController {
   constructor(private readonly itineraryService: ItineraryService) {}
 
+  @ApiOperation({ summary: 'Creates an itinerary.' })
   @AllowedUserType('onroad')
   @UseGuards(AuthGuard)
   @Post('/create')
@@ -34,6 +38,7 @@ export class ItineraryController {
     return {};
   }
 
+  @ApiOperation({ summary: 'Gets all itineraries.' })
   @AllowedUserType('onroad')
   @UseGuards(AuthGuard)
   @Get('/all')
@@ -42,6 +47,10 @@ export class ItineraryController {
     return await this.itineraryService.getAllItineraries();
   }
 
+  @ApiOperation({
+    summary:
+      "Gets all valid itineraries (whose 'departureDate' is in the future).",
+  })
   @AllowedUserType('any')
   @UseGuards(AuthGuard)
   @Post('/allValid')
@@ -51,6 +60,7 @@ export class ItineraryController {
     return await this.itineraryService.getItinerariesByCity(dto);
   }
 
+  @ApiOperation({ summary: "Adds an itinerary to the user's shopping cart." })
   @AllowedUserType('normal')
   @UseGuards(AuthGuard)
   @Put('/addToShoppingCart')
@@ -67,6 +77,9 @@ export class ItineraryController {
     return {};
   }
 
+  @ApiOperation({
+    summary: "Deletes an itinerary from the user's shopping cart.",
+  })
   @AllowedUserType('normal')
   @UseGuards(AuthGuard)
   @Delete('/removeFromShoppingCart')

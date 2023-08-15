@@ -15,11 +15,16 @@ import { AllowedUserType } from 'src/guards/auth/decorators/role.decorator';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { UpdateSeatDTO } from './dtos/updateSeat.dto';
 import { DeleteBusDTO } from './dtos/deleteBus.dto';
+import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { GetBusByIdDTO } from './dtos/getBusById.dto';
 
+@ApiCookieAuth('sessionId')
+@ApiTags('bus')
 @Controller('buses')
 export class BusesController {
   constructor(private readonly busService: BusesService) {}
 
+  @ApiOperation({ summary: 'Creates a bus.' })
   @AllowedUserType('onroad')
   @UseGuards(AuthGuard)
   @Post('/create')
@@ -30,13 +35,16 @@ export class BusesController {
   }
 
   // @UsePipes(ValidationPipe)
+
+  @ApiOperation({ summary: 'Gets a bus.' })
   @AllowedUserType('onroad')
   @UseGuards(AuthGuard)
   @Post('/getById')
-  async getById(@Body() { id }: { id: string }) {
-    return await this.busService.getById(id);
+  async getById(@Body() dto: GetBusByIdDTO) {
+    return await this.busService.getById(dto.id);
   }
 
+  @ApiOperation({ summary: 'Gets all buses.' })
   @AllowedUserType('onroad')
   @UseGuards(AuthGuard)
   @Get('/all')
@@ -44,6 +52,9 @@ export class BusesController {
     return await this.busService.getAllBuses();
   }
 
+  @ApiOperation({
+    summary: 'Updates the capacity of a specific seat type in a bus.',
+  })
   @AllowedUserType('onroad')
   @UseGuards(AuthGuard)
   @Put('/updateCapacity')
@@ -52,6 +63,7 @@ export class BusesController {
     return {};
   }
 
+  @ApiOperation({ summary: 'Deletes a bus.' })
   @AllowedUserType('onroad')
   @UseGuards(AuthGuard)
   @Delete('/delete')

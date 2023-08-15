@@ -28,7 +28,7 @@ export class ItineraryService {
     private readonly itineraryRepository: Repository<Itinerary>,
     @InjectRepository(Bus) private readonly busRepository: Repository<Bus>,
     private readonly redis: RedisService,
-  ) { }
+  ) {}
 
   async createItinerary(itineraryDTO: ItineraryDTO): Promise<Itinerary> {
     try {
